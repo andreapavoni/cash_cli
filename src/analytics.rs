@@ -3,6 +3,11 @@
 
 use crate::wallet::Operation;
 use std::collections::HashMap;
+
+#[cfg(test)]
+#[path = "test/analytics_test.rs"]
+mod analytics_test;
+
 #[derive(Debug)]
 pub struct Analytics<'a> {
     ledger: &'a Vec<Operation>,

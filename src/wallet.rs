@@ -4,6 +4,10 @@
 
 use chrono::NaiveDate;
 
+#[cfg(test)]
+#[path = "test/wallet_test.rs"]
+mod wallet_test;
+
 /// Operation type, it might either be a withdraw or a deposit.
 #[derive(Debug)]
 pub enum OperationTypes {
@@ -72,6 +76,11 @@ impl Wallet {
     /// Returns the list of operations happened on wallet.
     pub fn ledger(&self) -> &Vec<Operation> {
         &self.ledger
+    }
+
+    /// Returns current wallet balance.
+    pub fn balance(&self) -> i32 {
+        self.balance
     }
 
     fn apply_operation(
