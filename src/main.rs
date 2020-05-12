@@ -7,6 +7,7 @@ use crate::wallet::Wallet;
 mod analytics;
 use crate::analytics::Analytics;
 
+
 fn main() {
     let _config = resolve_configuration_file();
 
@@ -21,8 +22,6 @@ fn main() {
         String::from("Stipendio"),
     );
 
-    println!("WALLET> {:?}", my_wallet);
-
     my_wallet.withdraw(
         NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
         1000,
@@ -30,11 +29,27 @@ fn main() {
         String::from("Spesa"),
     );
 
-    println!("LEDGER> {:?}", my_wallet.ledger());
+    my_wallet.withdraw(
+        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
+        2500,
+        String::from("Casa"),
+        String::from("Bolletta luce"),
+    );
 
-    let stats = Analytics::new(my_wallet.ledger());
+    my_wallet.withdraw(
+        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
+        3000,
+        String::from("Casa"),
+        String::from("Idraulico"),
+    );
 
-    println!("STATS> {:?}", stats.categories());
+    let categories_stats = Analytics::new(my_wallet.ledger());
+
+    for category in categories_stats.categories().keys() {
+        println!("@ {:?}", category);
+        let labels_stats = Analytics::new(my_wallet.ledger());
+        println!("==> {:?}", labels_stats.labels(category.clone()));
+    }
 }
 
 /// Resolves the location of the stup configuration file

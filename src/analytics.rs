@@ -26,4 +26,20 @@ impl Analytics<'_> {
         }
         stats
     }
+
+    /// Returns stats about labels in a given category
+    pub fn labels(&self, category: String) -> HashMap<String, i32> {
+        let mut stats: HashMap<String, i32> = HashMap::new();
+
+        for op in self.ledger {
+            if op.category == category {
+                let val = match stats.get(&op.label) {
+                    Some(v) => v + op.amount,
+                    _ => op.amount,
+                };
+                stats.insert(op.label.clone(), val);
+            }
+        }
+        stats
+    }
 }
