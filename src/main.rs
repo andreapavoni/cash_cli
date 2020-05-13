@@ -1,12 +1,16 @@
+// use clap::App;
 use chrono::NaiveDate;
 use std::env;
 
-mod wallet;
-use crate::wallet::Wallet;
-
+// modules declarations
 mod analytics;
-use crate::analytics::Analytics;
+mod storage;
+mod types;
+mod wallet;
 
+use crate::analytics::Analytics;
+use crate::storage::Storage;
+use crate::wallet::Wallet;
 
 fn main() {
     let _config = resolve_configuration_file();
@@ -49,6 +53,17 @@ fn main() {
         println!("@ {:?}", category);
         let labels_stats = Analytics::new(my_wallet.ledger());
         println!("==> {:?}", labels_stats.labels(category.clone()));
+    }
+
+    // NOTE: to remove this `match` syntax I _should_ change return value of the `main` func
+    match Storage::save("data.cbor".to_string(), &my_wallet) {
+        Ok(_) => (),
+        Err(_e) => (),
+    }
+
+    match Storage::load("data.cbor".to_string()) {
+        Ok(w) => println!("FROM_FILE> {:?}", w),
+        Err(e) => println!("ERR FROM_FILE> {:?}", e),
     }
 }
 

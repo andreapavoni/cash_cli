@@ -3,21 +3,25 @@
 //! keeping a ledger.
 
 use chrono::NaiveDate;
+use serde_derive::{Deserialize, Serialize};
+
+use crate::types::naive_date;
 
 #[cfg(test)]
 #[path = "test/wallet_test.rs"]
 mod wallet_test;
 
 /// Operation type, it might either be a withdraw or a deposit.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum OperationTypes {
     Withdraw,
     Deposit,
 }
 
 /// Defines a single operation.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Operation {
+    #[serde(with = "naive_date")]
     pub date: NaiveDate,
     pub amount: i32,
     pub operation: OperationTypes,
@@ -44,7 +48,7 @@ impl Operation {
     }
 }
 /// A wallet.
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Wallet {
     name: String,
     balance: i32,
@@ -79,6 +83,7 @@ impl Wallet {
     }
 
     /// Returns current wallet balance.
+    #[allow(dead_code)]
     pub fn balance(&self) -> i32 {
         self.balance
     }
