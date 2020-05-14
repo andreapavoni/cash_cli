@@ -3,23 +3,26 @@ use std::env;
 
 // modules declarations
 mod analytics;
+mod cli_args;
+mod commands;
 mod storage;
 mod types;
 mod wallet;
 
 use crate::analytics::Analytics;
+use crate::cli_args::parse_args;
 use crate::storage::Storage;
 use crate::wallet::Wallet;
 
 fn main() {
+    parse_args();
+
     let _config = resolve_configuration_file();
 
     let my_wallet: Wallet = match Storage::load("data.cbor".to_string()) {
         Ok(w) => w,
         Err(_e) => Wallet::new(String::from("default"), 0),
     };
-
-    println!("WALLET> {:?}", my_wallet);
 
     let categories_stats = Analytics::new(my_wallet.ledger());
 

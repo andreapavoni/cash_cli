@@ -7,8 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# clap = "3.0.0-beta.1" # CLI options parser
-chrono = "0.4" # date/time handling
+# CLI options parser
+clap = "3.0.0-beta.1"
+# date/time handling
+chrono = "0.4"
 # serialization/deserialization
 serde = "^1.0"
 serde_derive = "^1.0"
