@@ -1,5 +1,4 @@
 // use clap::App;
-use chrono::NaiveDate;
 use std::env;
 
 // modules declarations
@@ -15,37 +14,12 @@ use crate::wallet::Wallet;
 fn main() {
     let _config = resolve_configuration_file();
 
-    let mut my_wallet = Wallet::new(String::from("default"), 0);
+    let my_wallet: Wallet = match Storage::load("data.cbor".to_string()) {
+        Ok(w) => w,
+        Err(_e) => Wallet::new(String::from("default"), 0),
+    };
 
     println!("WALLET> {:?}", my_wallet);
-
-    my_wallet.deposit(
-        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
-        10_000,
-        String::from("Entrate"),
-        String::from("Stipendio"),
-    );
-
-    my_wallet.withdraw(
-        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
-        1000,
-        String::from("Casa"),
-        String::from("Spesa"),
-    );
-
-    my_wallet.withdraw(
-        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
-        2500,
-        String::from("Casa"),
-        String::from("Bolletta luce"),
-    );
-
-    my_wallet.withdraw(
-        NaiveDate::parse_from_str("2020-05-05", "%Y-%m-%d").unwrap(),
-        3000,
-        String::from("Casa"),
-        String::from("Idraulico"),
-    );
 
     let categories_stats = Analytics::new(my_wallet.ledger());
 
@@ -59,11 +33,6 @@ fn main() {
     match Storage::save("data.cbor".to_string(), &my_wallet) {
         Ok(_) => (),
         Err(_e) => (),
-    }
-
-    match Storage::load("data.cbor".to_string()) {
-        Ok(w) => println!("FROM_FILE> {:?}", w),
-        Err(e) => println!("ERR FROM_FILE> {:?}", e),
     }
 }
 

@@ -5,7 +5,7 @@
 use chrono::NaiveDate;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::types::naive_date;
+use crate::types::date;
 
 #[cfg(test)]
 #[path = "test/wallet_test.rs"]
@@ -21,7 +21,7 @@ pub enum OperationTypes {
 /// Defines a single operation.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Operation {
-    #[serde(with = "naive_date")]
+    #[serde(with = "date")]
     pub date: NaiveDate,
     pub amount: i32,
     pub operation: OperationTypes,
@@ -66,12 +66,14 @@ impl Wallet {
     }
 
     /// Withdraws money from wallet.
+    #[allow(dead_code)]
     pub fn withdraw(&mut self, date: NaiveDate, amount: i32, category: String, label: String) {
         self.apply_operation(OperationTypes::Withdraw, date, amount, category, label);
         ()
     }
 
     /// Deposits money into wallet.
+    #[allow(dead_code)]
     pub fn deposit(&mut self, date: NaiveDate, amount: i32, category: String, label: String) {
         self.apply_operation(OperationTypes::Deposit, date, amount, category, label);
         ()
