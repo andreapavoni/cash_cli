@@ -1,5 +1,4 @@
-// use clap::App;
-use std::env;
+// use std::env;
 
 // modules declarations
 mod analytics;
@@ -9,43 +8,32 @@ mod storage;
 mod types;
 mod wallet;
 
-use crate::analytics::Analytics;
-use crate::cli_args::parse_args;
+use crate::cli_args::parse;
 use crate::storage::Storage;
 use crate::wallet::Wallet;
 
 fn main() {
-    parse_args();
+    if let Some(command) = parse() {
+        let mut my_wallet: Wallet = Storage::load_or_new("data.cbor".to_string());
 
-    let _config = resolve_configuration_file();
+        command.run(&mut my_wallet);
 
-    let my_wallet: Wallet = match Storage::load("data.cbor".to_string()) {
-        Ok(w) => w,
-        Err(_e) => Wallet::new(String::from("default"), 0),
-    };
-
-    let categories_stats = Analytics::new(my_wallet.ledger());
-
-    for category in categories_stats.categories().keys() {
-        println!("@ {:?}", category);
-        let labels_stats = Analytics::new(my_wallet.ledger());
-        println!("==> {:?}", labels_stats.labels(category.clone()));
+        match Storage::save("data.cbor".to_string(), &my_wallet) {
+            Ok(_) => (),
+            Err(_e) => (),
+        }
     }
 
-    // NOTE: to remove this `match` syntax I _should_ change return value of the `main` func
-    match Storage::save("data.cbor".to_string(), &my_wallet) {
-        Ok(_) => (),
-        Err(_e) => (),
-    }
+    // let _config = resolve_configuration_file();
 }
 
-/// Resolves the location of the stup configuration file
-fn resolve_configuration_file() -> String {
-    let mut home = env::var("HOME").unwrap();
-    home.push_str("/.config/cash.toml");
+// Resolves the location of the configuration file
+// fn resolve_configuration_file() -> String {
+//     let mut home = env::var("HOME").unwrap();
+//     home.push_str("/.config/cash.toml");
 
-    match env::var("XDG_CONFIG_HOME") {
-        Ok(path) => path,
-        _ => home,
-    }
-}
+//     match env::var("XDG_CONFIG_HOME") {
+//         Ok(path) => path,
+//         _ => home,
+//     }
+// }

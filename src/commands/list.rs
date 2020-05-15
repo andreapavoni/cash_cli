@@ -1,4 +1,7 @@
+//! A command to list operations.
+
 use super::Command;
+use crate::wallet::Wallet;
 
 use clap::ArgMatches;
 
@@ -28,10 +31,32 @@ impl Command for List {
         }
     }
 
-    fn run(&self) {
-        println!(
-            "List operations for year {:?} and month {:?} and category {:?}",
-            self.year, self.month, self.category
-        );
+    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
+        if let Some(category) = &self.category {
+            println!(
+                "List operations of category {:?} on month {:?} in year {:?}:\n",
+                category, self.month, self.year
+            );
+
+            for operation in my_wallet
+                .ledger()
+                .into_iter()
+                .filter(|&o| &o.category == category)
+                .collect::<Vec<_>>()
+            {
+                println!("{:?}", operation);
+            }
+        } else {
+            println!(
+                "List operations on month {:?} in year {:?}:\n",
+                self.month, self.year
+            );
+
+            for operation in my_wallet.ledger() {
+                println!("{:?}", operation);
+            }
+        }
+
+        my_wallet
     }
 }

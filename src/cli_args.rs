@@ -1,3 +1,5 @@
+//! A module to parse CLI options.
+
 use chrono::{Datelike, Local, NaiveDate};
 use clap::{crate_authors, crate_version, App, Arg};
 
@@ -20,7 +22,7 @@ use crate::commands::{
 // cash import input.csv
 // cash export output.csv --month 05 --year 2020
 
-pub fn parse_args() {
+pub fn parse() -> Option<Box<dyn Command>> {
     let matches = App::new("Cash")
         .about("Simple personal finance manager")
         .author(crate_authors!())
@@ -141,26 +143,13 @@ pub fn parse_args() {
         .get_matches();
 
     match matches.subcommand() {
-        ("record", Some(record)) => {
-            Record::new(record).run();
-        }
-        ("list", Some(list)) => {
-            List::new(list).run();
-        }
-        ("report", Some(report)) => {
-            Report::new(report).run();
-        }
-        ("import", Some(src)) => {
-            Import::new(src).run();
-        }
-        ("export", Some(dest)) => {
-            Export::new(dest).run();
-        }
-        _ => unreachable!(), // If all subcommands are defined above, anything else is unreachabe!()
+        ("record", Some(record)) => Some(Box::new(Record::new(record))),
+        ("list", Some(list)) => Some(Box::new(List::new(list))),
+        ("report", Some(report)) => Some(Box::new(Report::new(report))),
+        ("import", Some(src)) => Some(Box::new(Import::new(src))),
+        ("export", Some(dest)) => Some(Box::new(Export::new(dest))),
+        _ => None,
     }
-
-    // TODO: return something more meaningful
-    ()
 }
 
 fn is_valid_amount(amount: &str) -> Result<(), String> {
@@ -170,7 +159,6 @@ fn is_valid_amount(amount: &str) -> Result<(), String> {
     }
 }
 
-// TODO: move these helpers into a types::date module
 fn is_valid_date(val: &str) -> Result<(), String> {
     match NaiveDate::parse_from_str(val, "%Y-%m-%d") {
         Ok(_) => Ok(()),

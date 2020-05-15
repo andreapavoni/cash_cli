@@ -1,5 +1,6 @@
+//! A command to record a new operation.
+
 use super::Command;
-use crate::storage::Storage;
 use crate::wallet::Wallet;
 
 use chrono::NaiveDate;
@@ -23,9 +24,7 @@ impl Command for Record {
             label: record.value_of("label").unwrap().to_string(),
         }
     }
-    fn run(&self) {
-        let mut my_wallet: Wallet = Storage::load_or_new("data.cbor".to_string());
-
+    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
         match self.operation.as_str() {
             "deposit" => my_wallet.deposit(
                 self.date,
@@ -42,9 +41,6 @@ impl Command for Record {
             _ => unreachable!(),
         }
 
-        match Storage::save("data.cbor".to_string(), &my_wallet) {
-            Ok(_) => (),
-            Err(_e) => (),
-        }
+        my_wallet
     }
 }

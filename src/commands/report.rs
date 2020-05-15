@@ -1,4 +1,8 @@
+//! A command to print a report with analytics about operations.
+
 use super::Command;
+use crate::analytics::Analytics;
+use crate::wallet::Wallet;
 
 use clap::ArgMatches;
 
@@ -28,10 +32,28 @@ impl Command for Report {
         }
     }
 
-    fn run(&self) {
-        println!(
-            "Report operations for year {:?} and month {:?} and category {:?}",
-            self.year, self.month, self.category
-        );
+    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
+        let categories_stats = Analytics::new(my_wallet.ledger());
+        if let Some(category) = &self.category {
+            println!(
+                "Analytics for labels of category {:?} on month {:?} in year {:?}:\n",
+                category, self.month, self.year
+            );
+
+            for (label, amount) in categories_stats.labels(category.clone()) {
+                println!("{:?} = {:?}", label, amount);
+            }
+        } else {
+            println!(
+                "Analytics for all categories on month {:?} in year {:?}:\n",
+                self.month, self.year
+            );
+
+            for (category, amount) in categories_stats.categories() {
+                println!("{:?} = {:?}", category, amount);
+            }
+        }
+
+        my_wallet
     }
 }

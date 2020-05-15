@@ -1,4 +1,7 @@
+//! A command to export data to a file.
+
 use super::Command;
+use crate::wallet::Wallet;
 
 use clap::ArgMatches;
 pub struct Export {
@@ -12,7 +15,9 @@ impl Command for Export {
         }
     }
 
-    fn run(&self) {
+    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
         println!("Export to file {:?}", self.dest);
+
+        my_wallet
     }
 }
