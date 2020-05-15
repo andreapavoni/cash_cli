@@ -34,4 +34,11 @@ impl Storage {
             Err(e) => Err(Box::new(e)),
         }
     }
+
+    pub fn load_or_new(src_path: String) -> Wallet {
+        match Storage::load(src_path) {
+            Ok(w) => w,
+            Err(_e) => Wallet::new(String::from("default"), 0),
+        }
+    }
 }

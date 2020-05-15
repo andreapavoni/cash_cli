@@ -1,22 +1,33 @@
 use super::Command;
 
-pub struct Report<'a> {
+use clap::ArgMatches;
+
+pub struct Report {
     month: u32,
     year: i32,
-    category: Option<&'a str>,
+    category: Option<String>,
 }
 
-impl Report<'_> {
-    pub fn new(month: u32, year: i32, category: Option<&str>) -> Report {
-        Report {
-            month,
-            year,
-            category,
+impl Command for Report {
+    fn new(report: &ArgMatches) -> Report {
+        let month: u32 = report.value_of("month").unwrap().parse::<u32>().unwrap();
+        let year: i32 = report.value_of("year").unwrap().parse::<i32>().unwrap();
+
+        if let Some(category) = report.value_of("category") {
+            Report {
+                month,
+                year,
+                category: Some(category.to_string()),
+            }
+        } else {
+            Report {
+                month,
+                year,
+                category: None,
+            }
         }
     }
-}
 
-impl Command for Report<'_> {
     fn run(&self) {
         println!(
             "Report operations for year {:?} and month {:?} and category {:?}",

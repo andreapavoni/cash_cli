@@ -1,22 +1,33 @@
 use super::Command;
 
-pub struct List<'a> {
+use clap::ArgMatches;
+
+pub struct List {
     month: u32,
     year: i32,
-    category: Option<&'a str>,
+    category: Option<String>,
 }
 
-impl List<'_> {
-    pub fn new(month: u32, year: i32, category: Option<&str>) -> List {
-        List {
-            month,
-            year,
-            category,
+impl Command for List {
+    fn new(list: &ArgMatches) -> List {
+        let month: u32 = list.value_of("month").unwrap().parse::<u32>().unwrap();
+        let year: i32 = list.value_of("year").unwrap().parse::<i32>().unwrap();
+
+        if let Some(category) = list.value_of("category") {
+            List {
+                month,
+                year,
+                category: Some(category.to_string()),
+            }
+        } else {
+            List {
+                month,
+                year,
+                category: None,
+            }
         }
     }
-}
 
-impl Command for List<'_> {
     fn run(&self) {
         println!(
             "List operations for year {:?} and month {:?} and category {:?}",

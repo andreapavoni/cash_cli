@@ -1,6 +1,5 @@
 use chrono::{Datelike, Local, NaiveDate};
-use clap::crate_version;
-use clap::{crate_authors, App, Arg};
+use clap::{crate_authors, crate_version, App, Arg};
 
 use crate::commands::{
     export::Export, import::Import, list::List, record::Record, report::Report, Command,
@@ -8,17 +7,16 @@ use crate::commands::{
 
 // Usage ideas:
 
-// OPERATIONS
+// OPERATIONS:
 // cash record withdraw --amount 1000 --date 2020-05-05 --category Fondamentali --label Spesa --notes Conad
 // cash record deposit --amount 100000 --date 2020-05-05 --category Entrate --label Stipendio
 
-// DATA & STATS
+// DATA & STATS:
 // cash list --month 5 --year 2020
 // cash list --month 5 --year 2020 --category Fondamentali
 // cash report --month 5 --year 2020 --category Fondamentali
 
-// IMPORT / EXPORT
-
+// IMPORT / EXPORT:
 // cash import input.csv
 // cash export output.csv --month 05 --year 2020
 
@@ -144,46 +142,24 @@ pub fn parse_args() {
 
     match matches.subcommand() {
         ("record", Some(record)) => {
-            // Now we have a reference to clone's matches
-            Record::new(
-                record.value_of("operation").unwrap().to_string(),
-                NaiveDate::parse_from_str(record.value_of("date").unwrap(), "%Y-%m-%d").unwrap(),
-                record.value_of("amount").unwrap().parse::<u32>().unwrap(),
-                record.value_of("category").unwrap().to_string(),
-                record.value_of("label").unwrap().to_string(),
-            )
-            .run();
+            Record::new(record).run();
         }
         ("list", Some(list)) => {
-            // Now we have a reference to clone's matches
-            List::new(
-                list.value_of("month").unwrap().parse::<u32>().unwrap(),
-                list.value_of("year").unwrap().parse::<i32>().unwrap(),
-                list.value_of("category"),
-            )
-            .run();
+            List::new(list).run();
         }
         ("report", Some(report)) => {
-            // Now we have a reference to clone's matches
-            Report::new(
-                report.value_of("month").unwrap().parse::<u32>().unwrap(),
-                report.value_of("year").unwrap().parse::<i32>().unwrap(),
-                report.value_of("category"),
-            )
-            .run();
+            Report::new(report).run();
         }
         ("import", Some(src)) => {
-            // Now we have a reference to clone's matches
-            Import::new(src.value_of("input").unwrap().to_string()).run();
+            Import::new(src).run();
         }
-
         ("export", Some(dest)) => {
-            // Now we have a reference to clone's matches
-            Export::new(dest.value_of("output").unwrap().to_string()).run();
+            Export::new(dest).run();
         }
         _ => unreachable!(), // If all subcommands are defined above, anything else is unreachabe!()
     }
 
+    // TODO: return something more meaningful
     ()
 }
 
