@@ -2,7 +2,7 @@
 
 use super::Command;
 use crate::analytics::Analytics;
-use crate::wallet::Wallet;
+use crate::ledger::Ledger;
 
 use clap::ArgMatches;
 
@@ -32,15 +32,23 @@ impl Command for Report {
         }
     }
 
-    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
-        let categories_stats = Analytics::new(my_wallet.ledger());
+    fn run<'a>(&self, my_ledger: &'a mut Ledger) -> &'a Ledger {
+        let mut filter_category: Option<String> = None;
+
+        if let Some(category) = &self.category {
+            filter_category = Some(category.to_string());
+        }
+
+        let records = my_ledger.list_records(self.month, self.year, filter_category);
+        let stats = Analytics::new(&records);
+
         if let Some(category) = &self.category {
             println!(
                 "Analytics for labels of category {:?} on month {:?} in year {:?}:\n",
                 category, self.month, self.year
             );
 
-            for (label, amount) in categories_stats.labels(category.clone()) {
+            for (label, amount) in stats.labels(category.clone()) {
                 println!("{:?} = {:?}", label, amount);
             }
         } else {
@@ -49,11 +57,11 @@ impl Command for Report {
                 self.month, self.year
             );
 
-            for (category, amount) in categories_stats.categories() {
+            for (category, amount) in stats.categories() {
                 println!("{:?} = {:?}", category, amount);
             }
         }
 
-        my_wallet
+        my_ledger
     }
 }

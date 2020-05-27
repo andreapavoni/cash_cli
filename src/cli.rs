@@ -32,7 +32,7 @@ pub fn parse() -> Option<Box<dyn Command>> {
                 .about("Registers a new operation") // The message displayed in "cash -h" or "cash help"
                 .arg(
                     Arg::with_name("operation")
-                        .about("Operation to apply")
+                        .about("Record to apply")
                         .possible_values(&["withdraw", "deposit"])
                         .required(true),
                 )

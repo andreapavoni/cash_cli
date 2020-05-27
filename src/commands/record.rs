@@ -1,7 +1,7 @@
 //! A command to record a new operation.
 
 use super::Command;
-use crate::wallet::Wallet;
+use crate::ledger::Ledger;
 
 use chrono::NaiveDate;
 use clap::ArgMatches;
@@ -24,23 +24,24 @@ impl Command for Record {
             label: record.value_of("label").unwrap().to_string(),
         }
     }
-    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
-        match self.operation.as_str() {
-            "deposit" => my_wallet.deposit(
+
+    fn run<'a>(&self, my_ledger: &'a mut Ledger) -> &'a Ledger {
+        match &self.operation[..] {
+            "withdraw" => my_ledger.withdraw(
                 self.date,
                 self.amount,
-                self.category.clone(),
-                self.label.clone(),
+                self.category.as_str(),
+                self.label.as_str(),
             ),
-            "withdraw" => my_wallet.withdraw(
+            "deposit" => my_ledger.deposit(
                 self.date,
                 self.amount,
-                self.category.clone(),
-                self.label.clone(),
+                self.category.as_str(),
+                self.label.as_str(),
             ),
             _ => unreachable!(),
-        }
+        };
 
-        my_wallet
+        my_ledger
     }
 }

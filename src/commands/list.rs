@@ -1,7 +1,7 @@
 //! A command to list operations.
 
 use super::Command;
-use crate::wallet::Wallet;
+use crate::ledger::Ledger;
 
 use clap::ArgMatches;
 
@@ -31,32 +31,30 @@ impl Command for List {
         }
     }
 
-    fn run<'a>(&self, my_wallet: &'a mut Wallet) -> &'a Wallet {
-        if let Some(category) = &self.category {
-            println!(
-                "List operations of category {:?} on month {:?} in year {:?}:\n",
-                category, self.month, self.year
-            );
+    fn run<'a>(&self, my_ledger: &'a mut Ledger) -> &'a Ledger {
+        let mut filter_category: Option<String> = None;
 
-            for operation in my_wallet
-                .ledger()
-                .into_iter()
-                .filter(|&o| &o.category == category)
-                .collect::<Vec<_>>()
-            {
-                println!("{:?}", operation);
+        match &self.category {
+            Some(category) => {
+                println!(
+                    "List operations for category {:?} on month {:?} in year {:?}:\n",
+                    category, self.month, self.year
+                );
+
+                filter_category = Some(category.to_string());
             }
-        } else {
-            println!(
-                "List operations on month {:?} in year {:?}:\n",
-                self.month, self.year
-            );
-
-            for operation in my_wallet.ledger() {
-                println!("{:?}", operation);
+            None => {
+                println!(
+                    "List operations on month {:?} in year {:?}:\n",
+                    self.month, self.year
+                );
             }
         }
 
-        my_wallet
+        for record in my_ledger.list_records(self.month, self.year, filter_category) {
+            println!("{:?}", record);
+        }
+
+        my_ledger
     }
 }

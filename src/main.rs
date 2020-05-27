@@ -1,27 +1,21 @@
-// use std::env;
+#[macro_use]
+extern crate diesel;
 
 // modules declarations
 mod analytics;
-mod cli_args;
+mod cli;
 mod commands;
-mod storage;
+mod db;
+mod ledger;
 mod types;
-mod wallet;
 
-use crate::cli_args::parse;
-use crate::storage::Storage;
-use crate::wallet::Wallet;
+use crate::ledger::Ledger;
 
 fn main() {
-    if let Some(command) = parse() {
-        let mut my_wallet: Wallet = Storage::load_or_new("data.cbor".to_string());
+    if let Some(command) = cli::parse() {
+        let mut my_ledger: Ledger = Ledger::new();
 
-        command.run(&mut my_wallet);
-
-        match Storage::save("data.cbor".to_string(), &my_wallet) {
-            Ok(_) => (),
-            Err(_e) => (),
-        }
+        command.run(&mut my_ledger);
     }
 
     // let _config = resolve_configuration_file();
