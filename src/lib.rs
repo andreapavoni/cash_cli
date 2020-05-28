@@ -3,7 +3,6 @@ extern crate diesel;
 
 // modules declarations
 mod analytics;
-mod commands;
 mod db;
 mod types;
 mod utils;

@@ -3,9 +3,11 @@
 use chrono::{Datelike, Local, NaiveDate};
 use clap::{crate_authors, crate_version, App, Arg};
 
-use crate::commands::{
+use crate::cli::commands::{
     export::Export, import::Import, list::List, record::Record, report::Report, Command,
 };
+
+pub mod commands;
 
 // Usage ideas:
 
