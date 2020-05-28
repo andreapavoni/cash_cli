@@ -1,11 +1,8 @@
 use chrono::NaiveDate;
-use std::fmt;
 
 use super::schema::records;
 extern crate diesel;
 use self::diesel::prelude::*;
-
-use crate::utils::format_money;
 
 #[derive(Debug, Queryable)]
 pub struct Record {
@@ -15,20 +12,6 @@ pub struct Record {
     pub label: String,
     pub date: NaiveDate,
     pub operation: String,
-}
-
-impl fmt::Display for Record {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{} {} {} {} {}",
-            self.date,
-            self.operation,
-            format_money(self.amount as i64),
-            self.category,
-            self.label
-        )
-    }
 }
 
 #[derive(Insertable)]

@@ -21,3 +21,5 @@ diesel = { version = "1.1.0", features = ["sqlite", "chrono"] }
 dotenv = "0.15"
 # money formatting
 steel-cent = "0.2.3"
+# tables output
+cli-table = "0.3"

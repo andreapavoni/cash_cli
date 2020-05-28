@@ -1,9 +1,16 @@
 //! A command to list operations.
 
 use super::Command;
+use crate::db::models::Record as ModelRecord;
 use crate::ledger::Ledger;
+use crate::utils::format_money;
 
 use clap::ArgMatches;
+
+use cli_table::{
+    format::{CellFormat, Justify, Padding},
+    Cell, Row, Table,
+};
 
 pub struct List {
     month: u32,
@@ -51,10 +58,48 @@ impl Command for List {
             }
         }
 
-        for record in my_ledger.list_records(self.month, self.year, filter_category) {
-            println!("{}", record);
-        }
+        let records = my_ledger.list_records(self.month, self.year, filter_category);
+        let table = Table::new(build_rows(records), Default::default()).unwrap();
+
+        table.print_stdout().unwrap();
 
         my_ledger
     }
+}
+
+fn build_rows(records: Vec<ModelRecord>) -> Vec<Row> {
+    let bold = CellFormat::builder().bold(true).build();
+    let mut rows = vec![];
+
+    rows.push(Row::new(vec![
+        Cell::new("Date", bold),
+        Cell::new("Operation", bold),
+        Cell::new("Category", bold),
+        Cell::new("Label", bold),
+        Cell::new("Amount", bold),
+    ]));
+
+    for record in records {
+        rows.push(build_row(record))
+    }
+
+    rows
+}
+
+fn build_row(record: ModelRecord) -> Row {
+    let justify_right = CellFormat::builder()
+        .justify(Justify::Right)
+        .padding(Padding::builder().right(2).build())
+        .build();
+
+    Row::new(vec![
+        Cell::new(&format!("{}", record.date), justify_right),
+        Cell::new(&record.operation, justify_right),
+        Cell::new(&record.category, justify_right),
+        Cell::new(&record.label, justify_right),
+        Cell::new(
+            &format!("{}", format_money(record.amount as i64)),
+            justify_right,
+        ),
+    ])
 }

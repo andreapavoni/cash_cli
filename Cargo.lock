@@ -35,6 +35,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "clap",
+ "cli-table",
  "diesel",
  "dotenv",
  "serde",
@@ -84,6 +85,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "cli-table"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd782cbfda62468ed8f94f2c00496ff909ad4916f4411ab9ec7bdced5414a699"
+dependencies = [
+ "termcolor",
+ "unicode-width",
 ]
 
 [[package]]

@@ -4,8 +4,14 @@ use super::Command;
 use crate::analytics::Analytics;
 use crate::ledger::Ledger;
 use crate::utils::format_money;
+use std::collections::HashMap;
 
 use clap::ArgMatches;
+
+use cli_table::{
+    format::{CellFormat, Justify, Padding},
+    Cell, Row, Table,
+};
 
 pub struct Report {
     month: u32,
@@ -42,6 +48,7 @@ impl Command for Report {
 
         let records = my_ledger.list_records(self.month, self.year, filter_category);
         let stats = Analytics::new(&records);
+        let table;
 
         if let Some(category) = &self.category {
             println!(
@@ -49,20 +56,46 @@ impl Command for Report {
                 category, self.month, self.year
             );
 
-            for (label, amount) in stats.labels(category.clone()) {
-                println!("{:?} = {}", label, format_money(amount as i64));
-            }
+            table = Table::new(
+                build_rows(stats.labels(category.clone())),
+                Default::default(),
+            )
+            .unwrap();
         } else {
             println!(
                 "Analytics for all categories on month {:?} in year {:?}:\n",
                 self.month, self.year
             );
 
-            for (category, amount) in stats.categories() {
-                println!("{:?} = {}", category, format_money(amount as i64));
-            }
+            table = Table::new(build_rows(stats.categories()), Default::default()).unwrap();
         }
 
+        table.print_stdout().unwrap();
         my_ledger
     }
+}
+
+fn build_rows(data: HashMap<String, i32>) -> Vec<Row> {
+    let _bold = CellFormat::builder().bold(true).build();
+    let mut rows = vec![];
+
+    for item in data {
+        rows.push(build_row(item))
+    }
+
+    rows
+}
+
+fn build_row(item: (String, i32)) -> Row {
+    let (label, amount) = item;
+
+    let justify_right = CellFormat::builder()
+        .justify(Justify::Right)
+        .padding(Padding::builder().right(2).build())
+        .build();
+
+    Row::new(vec![
+        Cell::new(&label, justify_right),
+        Cell::new(&format!("{}", format_money(amount as i64)), justify_right),
+    ])
 }

@@ -33,7 +33,7 @@ impl Ledger {
     /// Withdraws money.
     #[allow(dead_code)]
     pub fn withdraw(&mut self, date: NaiveDate, amount: i32, category: &str, label: &str) -> &Self {
-        self.apply_operation(OperationTypes::Withdraw, date, amount, category, label);
+        self.apply_operation(OperationTypes::Withdraw, date, -amount, category, label);
 
         self
     }
