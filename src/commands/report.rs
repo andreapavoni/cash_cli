@@ -3,6 +3,7 @@
 use super::Command;
 use crate::analytics::Analytics;
 use crate::ledger::Ledger;
+use crate::utils::format_money;
 
 use clap::ArgMatches;
 
@@ -49,7 +50,7 @@ impl Command for Report {
             );
 
             for (label, amount) in stats.labels(category.clone()) {
-                println!("{:?} = {:?}", label, amount);
+                println!("{:?} = {}", label, format_money(amount as i64));
             }
         } else {
             println!(
@@ -58,7 +59,7 @@ impl Command for Report {
             );
 
             for (category, amount) in stats.categories() {
-                println!("{:?} = {:?}", category, amount);
+                println!("{:?} = {}", category, format_money(amount as i64));
             }
         }
 

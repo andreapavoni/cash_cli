@@ -6,6 +6,7 @@ mod analytics;
 mod commands;
 mod db;
 mod types;
+mod utils;
 
 pub mod cli;
 pub mod ledger;

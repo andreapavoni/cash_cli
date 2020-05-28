@@ -52,7 +52,7 @@ impl Command for List {
         }
 
         for record in my_ledger.list_records(self.month, self.year, filter_category) {
-            println!("{:?}", record);
+            println!("{}", record);
         }
 
         my_ledger

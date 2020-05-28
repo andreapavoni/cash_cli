@@ -19,3 +19,5 @@ serde_cbor = "0.11.1"
 diesel = { version = "1.1.0", features = ["sqlite", "chrono"] }
 # ENV configs
 dotenv = "0.15"
+# money formatting
+steel-cent = "0.2.3"
