@@ -126,8 +126,7 @@ pub fn parse() -> Option<Box<dyn Command>> {
                         .about("Filters by category and shows labels")
                         .takes_value(true)
                         .long("category")
-                        .short('c')
-                        .required(true),
+                        .short('c'),
                 ),
         )
         .subcommand(

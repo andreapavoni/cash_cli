@@ -3,23 +3,22 @@ extern crate diesel;
 
 // modules declarations
 mod analytics;
-mod cli;
 mod commands;
 mod db;
-mod ledger;
 mod types;
 
-use crate::ledger::Ledger;
+pub mod cli;
+pub mod ledger;
 
-fn main() {
-    if let Some(command) = cli::parse() {
-        let mut my_ledger: Ledger = Ledger::new();
+// fn main() {
+//     if let Some(command) = cli::parse() {
+//         let mut my_ledger: Ledger = Ledger::new();
 
-        command.run(&mut my_ledger);
-    }
+//         command.run(&mut my_ledger);
+//     }
 
-    // let _config = resolve_configuration_file();
-}
+// let _config = resolve_configuration_file();
+// }
 
 // Resolves the location of the configuration file
 // fn resolve_configuration_file() -> String {
