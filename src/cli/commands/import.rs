@@ -26,7 +26,7 @@ struct ParsedRecord {
     date: NaiveDate,
     category: String,
     label: String,
-    // description: String,
+    description: String,
     operation: String,
     amount: i32,
 }
@@ -48,9 +48,21 @@ impl Command for Import {
 
         for record in &records {
             if record.operation == "withdraw" {
-                my_ledger.withdraw(record.date, record.amount, &record.category, &record.label);
+                my_ledger.withdraw(
+                    record.date,
+                    record.amount,
+                    &record.category,
+                    &record.label,
+                    &record.description,
+                );
             } else {
-                my_ledger.deposit(record.date, record.amount, &record.category, &record.label);
+                my_ledger.deposit(
+                    record.date,
+                    record.amount,
+                    &record.category,
+                    &record.label,
+                    &record.description,
+                );
             }
         }
 
@@ -77,12 +89,13 @@ fn parse_csv(path: &str) -> Vec<ParsedRecord> {
         let (operation, amount) = parse_operation(&record);
         let category = record.category;
         let label = record.label;
+        let description = record.description;
 
         records.push(ParsedRecord {
             date,
             category,
             label,
-            // description: String,
+            description,
             operation,
             amount,
         });

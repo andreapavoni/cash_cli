@@ -12,6 +12,7 @@ pub struct Record {
     pub label: String,
     pub date: NaiveDate,
     pub operation: String,
+    pub description: Option<String>,
 }
 
 #[derive(Insertable)]
@@ -22,6 +23,7 @@ pub struct NewRecord<'a> {
     pub operation: &'a str,
     pub category: &'a str,
     pub label: &'a str,
+    pub description: &'a str,
 }
 
 pub struct RecordFilter {

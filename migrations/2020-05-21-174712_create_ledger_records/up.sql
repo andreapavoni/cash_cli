@@ -5,5 +5,6 @@ CREATE TABLE records (
     category VARCHAR NOT NULL,
     label VARCHAR NOT NULL,
     date DATE NOT NULL,
-    operation VARCHAR NOT NULL
+    operation VARCHAR NOT NULL,
+    description TEXT
 )

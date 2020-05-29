@@ -6,5 +6,6 @@ table! {
         label -> Text,
         date -> Date,
         operation -> Text,
+        description -> Nullable<Text>,
     }
 }

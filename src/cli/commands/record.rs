@@ -12,6 +12,7 @@ pub struct Record {
     date: NaiveDate,
     category: String,
     label: String,
+    description: String,
 }
 
 impl Command for Record {
@@ -22,6 +23,7 @@ impl Command for Record {
             date: NaiveDate::parse_from_str(record.value_of("date").unwrap(), "%Y-%m-%d").unwrap(),
             category: record.value_of("category").unwrap().to_string(),
             label: record.value_of("label").unwrap().to_string(),
+            description: record.value_of("description").unwrap().to_string(),
         }
     }
 
@@ -32,12 +34,14 @@ impl Command for Record {
                 self.amount,
                 self.category.as_str(),
                 self.label.as_str(),
+                self.description.as_str(),
             ),
             "deposit" => my_ledger.deposit(
                 self.date,
                 self.amount,
                 self.category.as_str(),
                 self.label.as_str(),
+                self.description.as_str(),
             ),
             _ => unreachable!(),
         };

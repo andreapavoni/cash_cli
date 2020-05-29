@@ -32,16 +32,44 @@ impl Ledger {
 
     /// Withdraws money.
     #[allow(dead_code)]
-    pub fn withdraw(&mut self, date: NaiveDate, amount: i32, category: &str, label: &str) -> &Self {
-        self.apply_operation(OperationTypes::Withdraw, date, -amount, category, label);
+    pub fn withdraw(
+        &mut self,
+        date: NaiveDate,
+        amount: i32,
+        category: &str,
+        label: &str,
+        description: &str,
+    ) -> &Self {
+        self.apply_operation(
+            OperationTypes::Withdraw,
+            date,
+            -amount,
+            category,
+            label,
+            description,
+        );
 
         self
     }
 
     /// Deposits money.
     #[allow(dead_code)]
-    pub fn deposit(&mut self, date: NaiveDate, amount: i32, category: &str, label: &str) -> &Self {
-        self.apply_operation(OperationTypes::Deposit, date, amount, category, label);
+    pub fn deposit(
+        &mut self,
+        date: NaiveDate,
+        amount: i32,
+        category: &str,
+        label: &str,
+        description: &str,
+    ) -> &Self {
+        self.apply_operation(
+            OperationTypes::Deposit,
+            date,
+            amount,
+            category,
+            label,
+            description,
+        );
         self
     }
 
@@ -70,6 +98,7 @@ impl Ledger {
         amount: i32,
         category: &str,
         label: &str,
+        description: &str,
     ) -> &Ledger {
         let operation = match ot {
             OperationTypes::Deposit => "deposit",
@@ -83,6 +112,7 @@ impl Ledger {
             date,
             category,
             label,
+            description,
         };
 
         ModelRecord::insert(&conn, &model_record);

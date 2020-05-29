@@ -68,9 +68,9 @@ fn build_rows(records: Vec<ModelRecord>) -> Vec<Row> {
 
     rows.push(Row::new(vec![
         Cell::new("Date", bold),
-        Cell::new("Operation", bold),
         Cell::new("Category", bold),
         Cell::new("Label", bold),
+        Cell::new("Description", bold),
         Cell::new("", bold),
     ]));
 
@@ -134,9 +134,9 @@ fn build_row(record: ModelRecord) -> Row {
 
     Row::new(vec![
         Cell::new(&format!("{}", record.date), Default::default()),
-        Cell::new(&record.operation, Default::default()),
         Cell::new(&record.category, Default::default()),
         Cell::new(&record.label, Default::default()),
+        Cell::new(&record.description.unwrap(), Default::default()),
         Cell::new(
             &format!("{}", format_money(record.amount as i64)),
             justify_right,
