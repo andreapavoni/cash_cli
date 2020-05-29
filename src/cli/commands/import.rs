@@ -52,7 +52,13 @@ impl Command for Import {
                 amount = (record.expense.replace(",", ".").parse::<f32>().unwrap() * 100.0) as i32;
                 my_ledger.withdraw(date, amount, &record.category, &record.label);
             } else {
-                amount = (record.earning.replace(",", ".").parse::<f32>().unwrap() * 100.0) as i32;
+                amount = (record
+                    .earning
+                    .replace(".", "")
+                    .replace(",", ".")
+                    .parse::<f32>()
+                    .unwrap()
+                    * 100.0) as i32;
 
                 my_ledger.deposit(date, amount, &record.category, &record.label);
             }

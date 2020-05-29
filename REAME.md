@@ -6,6 +6,8 @@ and train myself with Rust.
 ## Setup
 
 ```
+cargo install diesel_cli --no-default-features --features sqlite
+diesel migration run
 cargo build
 cargo test
 cargo run
