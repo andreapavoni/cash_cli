@@ -31,3 +31,4 @@ It's still _heavily work in progress_, but it works. See TODO below.
     - [ ] provide a CSV file for demo
   - [ ] export to CSV
 - [ ] (re)write proper tests
+- [ ] remove all those `unwrap()`s and add better error handling
