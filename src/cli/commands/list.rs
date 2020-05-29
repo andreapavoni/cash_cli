@@ -43,19 +43,9 @@ impl Command for List {
 
         match &self.category {
             Some(category) => {
-                println!(
-                    "List operations for category {:?} on month {:?} in year {:?}:\n",
-                    category, self.month, self.year
-                );
-
                 filter_category = Some(category.to_string());
             }
-            None => {
-                println!(
-                    "List operations on month {:?} in year {:?}:\n",
-                    self.month, self.year
-                );
-            }
+            None => {}
         }
 
         let records = my_ledger.list_records(self.month, self.year, filter_category);
@@ -69,6 +59,11 @@ impl Command for List {
 
 fn build_rows(records: Vec<ModelRecord>) -> Vec<Row> {
     let bold = CellFormat::builder().bold(true).build();
+    let justify_right = CellFormat::builder()
+        .justify(Justify::Right)
+        .padding(Padding::builder().right(2).build())
+        .build();
+
     let mut rows = vec![];
 
     rows.push(Row::new(vec![
@@ -76,12 +71,57 @@ fn build_rows(records: Vec<ModelRecord>) -> Vec<Row> {
         Cell::new("Operation", bold),
         Cell::new("Category", bold),
         Cell::new("Label", bold),
-        Cell::new("Amount", bold),
+        Cell::new("", bold),
     ]));
+
+    let expenses: i32 = records
+        .iter()
+        .filter(|item| item.operation == "withdraw")
+        .fold(0i32, |sum, item| sum + item.amount);
+
+    let earnings: i32 = records
+        .iter()
+        .filter(|item| item.operation == "deposit")
+        .fold(0i32, |sum, item| sum + item.amount);
 
     for record in records {
         rows.push(build_row(record))
     }
+
+    rows.push(Row::new(vec![
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+    ]));
+
+    rows.push(Row::new(vec![
+        Cell::new("Total earnings", bold),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new(&format!("{}", format_money(earnings as i64)), justify_right),
+    ]));
+
+    rows.push(Row::new(vec![
+        Cell::new("Total expenses", bold),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new(&format!("{}", format_money(expenses as i64)), justify_right),
+    ]));
+
+    rows.push(Row::new(vec![
+        Cell::new("Total", bold),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+        Cell::new(
+            &format!("{}", format_money((earnings - expenses) as i64)),
+            justify_right,
+        ),
+    ]));
 
     rows
 }
@@ -93,10 +133,10 @@ fn build_row(record: ModelRecord) -> Row {
         .build();
 
     Row::new(vec![
-        Cell::new(&format!("{}", record.date), justify_right),
-        Cell::new(&record.operation, justify_right),
-        Cell::new(&record.category, justify_right),
-        Cell::new(&record.label, justify_right),
+        Cell::new(&format!("{}", record.date), Default::default()),
+        Cell::new(&record.operation, Default::default()),
+        Cell::new(&record.category, Default::default()),
+        Cell::new(&record.label, Default::default()),
         Cell::new(
             &format!("{}", format_money(record.amount as i64)),
             justify_right,

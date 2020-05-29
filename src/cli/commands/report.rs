@@ -51,22 +51,12 @@ impl Command for Report {
         let table;
 
         if let Some(category) = &self.category {
-            println!(
-                "Analytics for labels of category {:?} on month {:?} in year {:?}:\n",
-                category, self.month, self.year
-            );
-
             table = Table::new(
                 build_rows(stats.labels(category.clone())),
                 Default::default(),
             )
             .unwrap();
         } else {
-            println!(
-                "Analytics for all categories on month {:?} in year {:?}:\n",
-                self.month, self.year
-            );
-
             table = Table::new(build_rows(stats.categories()), Default::default()).unwrap();
         }
 
@@ -76,26 +66,37 @@ impl Command for Report {
 }
 
 fn build_rows(data: HashMap<String, i32>) -> Vec<Row> {
-    let _bold = CellFormat::builder().bold(true).build();
+    let bold = CellFormat::builder().bold(true).build();
+    let justify_right: CellFormat = CellFormat::builder()
+        .justify(Justify::Right)
+        .padding(Padding::builder().right(2).build())
+        .build();
     let mut rows = vec![];
 
+    let total: i32 = data.iter().fold(0i32, |sum, (_, amount)| sum + amount);
+
     for item in data {
-        rows.push(build_row(item))
+        rows.push(build_row(item, justify_right))
     }
+
+    rows.push(Row::new(vec![
+        Cell::new("", Default::default()),
+        Cell::new("", Default::default()),
+    ]));
+
+    rows.push(Row::new(vec![
+        Cell::new("Total", bold),
+        Cell::new(&format!("{}", format_money(total as i64)), justify_right),
+    ]));
 
     rows
 }
 
-fn build_row(item: (String, i32)) -> Row {
+fn build_row(item: (String, i32), cell_format: CellFormat) -> Row {
     let (label, amount) = item;
 
-    let justify_right = CellFormat::builder()
-        .justify(Justify::Right)
-        .padding(Padding::builder().right(2).build())
-        .build();
-
     Row::new(vec![
-        Cell::new(&label, justify_right),
-        Cell::new(&format!("{}", format_money(amount as i64)), justify_right),
+        Cell::new(&label, Default::default()),
+        Cell::new(&format!("{}", format_money(amount as i64)), cell_format),
     ])
 }
