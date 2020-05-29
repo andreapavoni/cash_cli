@@ -10,7 +10,7 @@ cargo install diesel_cli --no-default-features --features sqlite
 diesel migration run
 cargo build
 cargo test
-cargo run
+cargo run --bin cash -- -h
 ```
 
 It actually isn't interactive at all, if you run it, it will print some string to show you
