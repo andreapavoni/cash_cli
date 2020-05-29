@@ -14,7 +14,6 @@ chrono = "0.4"
 # serialization/deserialization
 serde = "^1.0"
 serde_derive = "^1.0"
-serde_cbor = "0.11.1"
 # db/orm
 diesel = { version = "1.1.0", features = ["sqlite", "chrono"] }
 # ENV configs
@@ -23,3 +22,5 @@ dotenv = "0.15"
 steel-cent = "0.2.3"
 # tables output
 cli-table = "0.3"
+# csv encoding/decoding
+csv = "1.1"

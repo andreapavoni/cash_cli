@@ -118,7 +118,7 @@ fn build_rows(records: Vec<ModelRecord>) -> Vec<Row> {
         Cell::new("", Default::default()),
         Cell::new("", Default::default()),
         Cell::new(
-            &format!("{}", format_money((earnings - expenses) as i64)),
+            &format!("{}", format_money((earnings + expenses) as i64)),
             justify_right,
         ),
     ]));
