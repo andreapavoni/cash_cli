@@ -2,3 +2,5 @@
 *.cbor
 *.sqlite
 *.csv
+!data.demo.csv
+!template.demo.csv

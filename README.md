@@ -30,7 +30,7 @@ It's still _heavily work in progress_, but it works. See TODO below.
   - [x] report stats (by month and/or category)
     - [ ] set month and/or year from-to ranges (maybe -M and -Y?)
   - [x] import from CSV
-    - [ ] provide a CSV file for demo
+    - [x] provide CSV files for demos data
     - [x] templates to import operations: sets same date day and current month + year
       - [ ] set month and/or year on the CLI options
   - [ ] export to CSV
