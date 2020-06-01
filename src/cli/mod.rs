@@ -71,6 +71,14 @@ pub fn parse() -> Option<Box<dyn Command>> {
                         .long("label")
                         .short('l')
                         .required(true),
+                )
+                .arg(
+                    Arg::with_name("description")
+                        .about("Sets description for operation")
+                        .takes_value(true)
+                        .long("description")
+                        .short('D')
+                        .required(true),
                 ),
         )
         .subcommand(
