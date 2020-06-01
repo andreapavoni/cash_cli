@@ -134,7 +134,17 @@ pub fn parse() -> Option<Box<dyn Command>> {
         .subcommand(
             App::new("import")
                 .about("Imports from a CSV file")
-                .arg(Arg::with_name("input").about("path to CSV file to read")),
+                .arg(Arg::with_name("input").about("path to CSV file to read"))
+                .arg(
+                    Arg::with_name("template")
+                        .about(
+                            "Imports records template with same day but different month and year",
+                        )
+                        .takes_value(false)
+                        .long("template")
+                        .short('t')
+                        .required(false),
+                ),
         )
         .subcommand(
             App::new("export")
@@ -147,7 +157,7 @@ pub fn parse() -> Option<Box<dyn Command>> {
         ("record", Some(record)) => Some(Box::new(Record::new(record))),
         ("list", Some(list)) => Some(Box::new(List::new(list))),
         ("report", Some(report)) => Some(Box::new(Report::new(report))),
-        ("import", Some(src)) => Some(Box::new(Import::new(src))),
+        ("import", Some(args)) => Some(Box::new(Import::new(args))),
         ("export", Some(dest)) => Some(Box::new(Export::new(dest))),
         _ => None,
     }
@@ -188,7 +198,7 @@ fn is_valid_year(month: &str) -> Result<(), String> {
     }
 }
 
-fn current_date() -> NaiveDate {
+pub fn current_date() -> NaiveDate {
     Local::today().naive_local()
 }
 

@@ -3,12 +3,13 @@
 extern crate csv;
 extern crate serde;
 
-use chrono::NaiveDate;
+use chrono::{Datelike, NaiveDate};
 use clap::ArgMatches;
 use serde_derive::Deserialize;
 use std::fs::File;
 
 use super::Command;
+use crate::cli::current_date;
 use crate::ledger::Ledger;
 
 #[derive(Debug, Deserialize)]
@@ -33,12 +34,16 @@ struct ParsedRecord {
 
 pub struct Import {
     src: String,
+    is_template: bool,
 }
 
 impl Command for Import {
-    fn new(src: &ArgMatches) -> Import {
+    fn new(args: &ArgMatches) -> Import {
+        let is_template: bool = args.is_present("template");
+
         Import {
-            src: src.value_of("input").unwrap().to_string(),
+            src: args.value_of("input").unwrap().to_string(),
+            is_template,
         }
     }
     fn run<'a>(&self, my_ledger: &'a mut Ledger) -> &'a Ledger {
@@ -47,9 +52,11 @@ impl Command for Import {
         let records = parse_csv(&self.src);
 
         for record in &records {
+            let date: NaiveDate = set_date(record.date, self.is_template);
+
             if record.operation == "withdraw" {
                 my_ledger.withdraw(
-                    record.date,
+                    date,
                     record.amount,
                     &record.category,
                     &record.label,
@@ -57,7 +64,7 @@ impl Command for Import {
                 );
             } else {
                 my_ledger.deposit(
-                    record.date,
+                    date,
                     record.amount,
                     &record.category,
                     &record.label,
@@ -118,5 +125,14 @@ fn parse_operation<'a>(record: &'a CsvRecord) -> (String, i32) {
         (String::from("withdraw"), parse_amount(&record.expense))
     } else {
         (String::from("deposit"), parse_amount(&record.earning))
+    }
+}
+
+fn set_date(date: NaiveDate, is_template: bool) -> NaiveDate {
+    if is_template {
+        let today = current_date();
+        NaiveDate::from_ymd(today.year(), today.month(), date.day())
+    } else {
+        date
     }
 }
