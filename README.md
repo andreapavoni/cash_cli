@@ -76,8 +76,8 @@ target/debug/cash list -m 5 -y 2020
 +----------------+--------------+------------+-------------+---------------+
 
 
-# report for may 2020 by categories
-target/debug/cash list -m 5 -y 2020
+# report for may 2020 by grouped by categories
+target/debug/cash report -m 5 -y 2020
 
 +--------------+--------------+
 | Fundamentals |  -290,00 €   |
@@ -98,8 +98,8 @@ target/debug/cash list -m 5 -y 2020
 | Total        | 3 861,00 €   |
 +--------------+--------------+
 
-# report for may 2020 by category labels
-target/debug/cash list -m 5 -y 2020 -c Bills
+# report for may 2020 grouped by labels in category "Bills"
+target/debug/cash report -m 5 -y 2020 -c Bills
 
 +----------+-------------+
 | Mobile   |   -8,00 €   |
