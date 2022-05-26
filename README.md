@@ -21,7 +21,7 @@ target/debug/cash -h
 
 ```
 # manually add records
-target/debug/cash record withdraw -a "100" --category "Lifestyle" --label "Club" -d "2020-05-27" -D "Dancing"
+target/debug/cash record withdraw -a "1000" --category "Lifestyle" --label "Club" -d "2020-05-27" -D "Dancing"
 
 # import demo data (may 2020)
 target/debug/cash import data.demo.csv
@@ -119,10 +119,11 @@ It's still _heavily work in progress_, but it works. See TODO below.
 
 ## TODO
 
-- [ ] write a better README with some fancy example output
+- [x] write a better README with some fancy example output
 - [ ] Basic features + ideas/iterations
   - [x] record withdraw
   - [x] record deposit
+    - [ ] use normal price, not cents
   - [x] list records (by month and/or category)
     - [ ] set month and/or year from-to ranges (maybe -M and -Y?)
   - [x] report stats (by month and/or category)
@@ -137,7 +138,9 @@ It's still _heavily work in progress_, but it works. See TODO below.
 
 ## MAYBE
 
-- [ ] remote server for storage/sync (aka cloud)
+- [ ] multiple containers to move money around (aka: `wallet`) ?
+  - keep a balance (total and/or for each wallet)
+- [ ] remote server for storage/sync (aka `cloud`)
   - users and API keys
   - no web ui OR barebones equivalent of a CLI ?
     - same features as API and hypothetichal web UI like the CLI app

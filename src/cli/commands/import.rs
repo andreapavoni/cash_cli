@@ -89,8 +89,6 @@ fn parse_csv(path: &str) -> Vec<ParsedRecord> {
     for result in rdr.deserialize() {
         let record: CsvRecord = result.unwrap();
 
-        // println!("{:#?}", record);
-
         let date: NaiveDate = NaiveDate::parse_from_str(&record.date, "%d/%m/%Y").unwrap();
 
         let (operation, amount) = parse_operation(&record);
